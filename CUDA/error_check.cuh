@@ -1,12 +1,18 @@
-#define gpuErrchk(ans) { gpuAssert((ans), __FILE__, __LINE__); }
-inline void gpuAssert(cudaError_t code, const char *file, int line, bool abort=true)
+inline void gpuAssert(cudaError_t code, const char *file, cosnt int line, const bool abort = true)
 {
    if (code != cudaSuccess) 
    {
-      fprintf(stderr,"GPUassert: %s %s %d\n", cudaGetErrorString(code), file, line);
-      if (abort) exit(code);
+      std::fprintf(stderr, "GPUassert: %s %s %d\n", cudaGetErrorString(code), file, line);
+      if (abort) std::exit(code);
    }
 }
+
+#ifdef NDEBUG
+#define gpuErrchk(ans)
+#else
+#define gpuErrchk(ans) gpuAssert((ans), __FILE__, __LINE__)
+#endif
+
 
 /// check return code of API calls:
 // gpuErrchk( cudaMalloc(&a_d, size*sizeof(int)) );
